@@ -1,5 +1,7 @@
 using _Nexus.Services.MLRecommendationService;
+using _Nexus.Services.SecurityService;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Authentication;
 using Nexus.Configuration;
 using Nexus.Extensions;
 
@@ -9,10 +11,16 @@ IConfiguration configuration = builder.Configuration;
 APIConfiguration appConfiguration = new();
 configuration.Bind(appConfiguration);
 
+var token = configuration["Authentication:Token"]; 
+
+builder.Services.AddAuthentication("Bearer") 
+    .AddScheme<TokenAuthenticationOptions, TokenAuthenticationHandler>("Bearer", options =>
+    {
+        options.Token = token; 
+    });
+
 builder.Services.Configure<APIConfiguration>(configuration);
-
 builder.Services.AddSwagger(appConfiguration);
-
 builder.Services.AddHealthChecks();
 builder.Services.AddMongoDbContext(appConfiguration);
 builder.Services.AddScoped<RecommendationEngine>();
@@ -31,8 +39,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication(); 
 app.UseAuthorization();
 
+app.UseMiddleware<TokenAuthenticationMiddleware>(token); 
 app.MapControllers();
 
 app.MapHealthChecks("/health-check", new HealthCheckOptions()

@@ -10,7 +10,7 @@ namespace _Nexus.Models
     public class ProdutosModel
     {
         [BsonId(IdGenerator = typeof(ObjectIdGenerator))]
-        public string Id { get; set; }
+        public ObjectId Id { get; set; }
 
         [BsonElement("nome")]
         [Required]

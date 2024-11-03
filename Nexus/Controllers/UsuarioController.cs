@@ -1,10 +1,12 @@
 using _Nexus.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nexus.UseCase;
 using System.Net;
 
 namespace Nexus.Controllers
 {
+   
     [ApiController]
     [Route("api/usuario")]
     [Tags("Usuarios")]
@@ -18,123 +20,161 @@ namespace Nexus.Controllers
         }
 
         /// <summary>
-        /// Create a new task
+        /// Cadastro de Usuários
         /// </summary>
+        /// <param name="userRequest"></param>
+        /// <returns></returns>
         [HttpPost]
+        [Authorize]
         [ProducesResponseType((int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-        public IActionResult CreateTask([FromBody] UsuarioRequest request)
+        public IActionResult Post([FromBody] UsuarioRequest userRequest)
         {
-            var usuario = new UsuarioModel
+            if (userRequest == null)
+                return BadRequest("Dados do usuário não podem ser nulos.");
+
+            try
             {
-                NomeUsuario = request.NomeUsuario,
-                CPF = request.CPF,
-                Telefone = request.Telefone,
-                Email = request.Email
-            };
-
-            usuario.SetPassword(request.Password); 
-
-            _userUseCase.AddTask(usuario);
-
-            return Created();
+                _userUseCase.CreateUser(userRequest);
+                return StatusCode((int)HttpStatusCode.Created);
+            }
+            catch
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, "Erro ao criar usuário.");
+            }
         }
 
-
         /// <summary>
-        /// Retrieves all tasks
+        /// Retorna todos os usuários
         /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-        public ActionResult<IEnumerable<UsuarioModel>> GetAll()
+        public IActionResult Get()
         {
-            var usuarios = _userUseCase.GetAllTasks();
-
-            return Ok(usuarios);
+            try
+            {
+                var users = _userUseCase.GetUsers();
+                return Ok(users);
+            }
+            catch
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, "Erro ao recuperar usuários.");
+            }
         }
 
         /// <summary>
-        /// Retrieves a specific task by ID
+        /// Retorna um usuário específico pelo ID
         /// </summary>
-
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(UsuarioModel), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public ActionResult<UsuarioModel> GetById(string id)
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+        public IActionResult Get(string id)
         {
-            var usuario = _userUseCase.GetTaskById(id);
-
-            if (usuario == null)
+            if (string.IsNullOrEmpty(id))
             {
-                return NotFound();
+                return BadRequest("O ID do usuário não pode ser nulo ou vazio.");
             }
 
-            return Ok(usuario);
+            // Log o ID recebido
+            Console.WriteLine($"Buscando usuário com ID: {id}");
+
+            try
+            {
+                var user = _userUseCase.GetUserById(id);
+                if (user == null)
+                {
+                    return NotFound("Usuário não encontrado.");
+                }
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message); // Retorna erro 500 em caso de exceção
+            }
         }
 
         /// <summary>
-        /// Deletes a task by id
+        /// Atualiza um usuário pelo ID
         /// </summary>
-        /// <param name="id">The ID of the task</param>
+        /// <param name="id"></param>
+        /// <param name="userRequest"></param>
+        /// <returns></returns>
+        [HttpPut("{id}")]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+        public IActionResult Put(string id, [FromBody] UsuarioRequest userRequest)
+        {
+            if (userRequest == null)
+                return BadRequest("Dados do usuário não podem ser nulos.");
+
+            try
+            {
+                var userExists = _userUseCase.GetUserById(id);
+                if (userExists == null)
+                    return NotFound("Usuário não encontrado.");
+
+                _userUseCase.UpdateUser(id, userRequest);
+                return NoContent();
+            }
+            catch
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, "Erro ao atualizar usuário.");
+            }
+        }
+
+        /// <summary>
+        /// Exclui um usuário pelo ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         public IActionResult Delete(string id)
         {
-            var taskToDelete = _userUseCase.GetTaskById(id);
-
-            if (taskToDelete == null)
+            try
             {
-                return NotFound();
+                _userUseCase.DeleteUser(id);
+                return NoContent(); // Retorna 204 No Content se a exclusão foi bem-sucedida
             }
-
-            _userUseCase.DeleteTask(id);
-
-            return NoContent();
-        }
-
-
-        /// <summary>
-        /// Updates an existing task
-        /// </summary>
-        [HttpPut("{id}")]
-        [ProducesResponseType((int)HttpStatusCode.NoContent)]
-        [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public IActionResult Update(string id, [FromBody] UsuarioRequest request)
-        {
-            var taskToUpdate = _userUseCase.GetTaskById(id);
-
-            if (taskToUpdate == null)
+            catch (Exception ex)
             {
-                return NotFound();
+                return NotFound(ex.Message); // Retorna 404 se o usuário não for encontrado
             }
-
-            taskToUpdate.NomeUsuario = request.NomeUsuario;
-            taskToUpdate.CPF = request.CPF;
-            taskToUpdate.PasswordHash = request.Password;
-            taskToUpdate.Email = request.Email;
-            taskToUpdate.Telefone = request.Telefone;
-
-            _userUseCase.UpdateTask(taskToUpdate);
-
-            return NoContent();
         }
 
         /// <summary>
-        /// Cadastro de like em um determinado produto
+        /// Cadastro de like em um determinado usuário
         /// </summary>
         /// <param name="userLike"></param>
         /// <returns></returns>
-        [HttpPost]
-        [Route("likeuser")]
-        public async Task<IActionResult> PostUserLikeAsync([FromBody] UsuarioLike userLike)
+        [HttpPost("likeuser")]
+        [ProducesResponseType((int)HttpStatusCode.Created)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+        public IActionResult PostUserLike([FromBody] UsuarioLike userLike)
         {
-            _userUseCase.LikedUser(userLike);
+            if (userLike == null)
+                return BadRequest("Dados do like não podem ser nulos.");
 
-            return Created();
+            try
+            {
+                _userUseCase.LikedUser(userLike);
+                return StatusCode((int)HttpStatusCode.Created);
+            }
+            catch
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, "Erro ao registrar like.");
+            }
         }
-
     }
 }

@@ -7,6 +7,8 @@ namespace _Nexus.Database
 
     {
         public DbSet<UsuarioModel> Usuarios { get; set; }
+
+        public DbSet<UsuarioLike> UserLike { get; set; }
         public DbSet<ProdutosModel> Produtos { get; set; }
 
         public NXContext(DbContextOptions<NXContext> options) : base(options) { }

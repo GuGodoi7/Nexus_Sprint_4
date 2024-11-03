@@ -7,41 +7,41 @@ namespace Nexus.UseCase
 {
     public class ProdutoUseCase
     {
-        private readonly IRepository<ProdutosModel> _produtoRepository;
+        private readonly IRepository<ProdutosModel> _ProdutoRepository;
 
-        public ProdutoUseCase(IRepository<ProdutosModel> produtoRepository)
+        public ProdutoUseCase(IRepository<ProdutosModel> ProdutoRepository)
         {
-            _produtoRepository = produtoRepository;
+            _ProdutoRepository = ProdutoRepository;
         }
 
         public IEnumerable<ProdutosModel> GetAllTasks()
         {
-            return _produtoRepository.GetAll();
+            return _ProdutoRepository.GetAll();
         }
 
-        public ProdutosModel GetTaskById(string id)
+        public ProdutosModel GetProdutosById(string id)
         {
-            return _produtoRepository.GetById(id);
+            return _ProdutoRepository.GetById(id);
         }
 
-        public void AddTask(ProdutosModel produtos)
+    public void AddProdutos(ProdutosModel produto)
+    {
+        if (produto.Id == ObjectId.Empty) 
         {
-            if (string.IsNullOrEmpty(produtos.Id))
-            {
-                produtos.Id = ObjectId.GenerateNewId().ToString();
-            }
-
-            _produtoRepository.Add(produtos);
+            produto.Id = ObjectId.GenerateNewId(); 
         }
 
-        public void UpdateTask(ProdutosModel produtos)
+        _ProdutoRepository.Add(produto);
+    }
+
+        public void UpdateProdutos(ProdutosModel produto)
         {
-            _produtoRepository.Update(produtos);
+            _ProdutoRepository.Update(produto);
         }
 
-        public void DeleteTask(string id)
+        public void DeleteProdutos(string id)
         {
-            _produtoRepository.Delete(id);
+            _ProdutoRepository.Delete(id);
         }
     }
 }

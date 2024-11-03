@@ -1,6 +1,7 @@
 ﻿using _Nexus.Models;
 using Microsoft.ML;
 using MongoDB.Bson;
+using System;
 using System.Collections.Generic;
 
 namespace _Nexus.Services.MLRecommendationService
@@ -60,7 +61,7 @@ namespace _Nexus.Services.MLRecommendationService
 
         public void PreparingandTrainModel(IEnumerable<UsuarioLike> enumerable)
         {
-            throw new NotImplementedException();
+            TrainModel(enumerable);
         }
     }
 

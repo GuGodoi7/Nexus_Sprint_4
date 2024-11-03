@@ -1,9 +1,11 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.IdGenerators;
+using MongoDB.EntityFrameworkCore;
 
 namespace _Nexus.Models
 {
+    [Collection("NX_USERLIKE")]
     public class UsuarioLike
     {
         [BsonId(IdGenerator = typeof(ObjectIdGenerator))]

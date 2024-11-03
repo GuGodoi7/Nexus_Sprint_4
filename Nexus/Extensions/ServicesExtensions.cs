@@ -23,37 +23,40 @@ namespace Nexus.Extensions
                     Description = appConfiguration.Swagger.Description,
                     Contact = new OpenApiContact() { Email = appConfiguration.Swagger.Email, Name = appConfiguration.Swagger.Name }
                 });
+
                 x.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Name = "Authorization",
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer"
+                    Scheme = "Bearer",
+                    Description = "Insira o token JWT com o prefixo 'Bearer ' no campo abaixo."
                 });
+
                 x.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
                 {
+                    Reference = new OpenApiReference
                     {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            }
-                        },
-                        new string[] {}
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
                     }
-                });
+                },
+                new string[] {}
+            }
+        });
 
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
 
                 x.IncludeXmlComments(xmlPath);
-
             });
 
             return services;
         }
+
 
         public static IServiceCollection AddUseCases(this IServiceCollection services)
         {

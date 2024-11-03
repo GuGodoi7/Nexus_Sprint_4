@@ -1,9 +1,7 @@
 ﻿using _Nexus.Models;
-using _Nexus.Repository.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Nexus.UseCase;
 using System.Net;
-using System.Threading.Tasks;
 
 namespace Nexus.Controllers
 {
@@ -20,7 +18,7 @@ namespace Nexus.Controllers
         }
 
         /// <summary>
-        /// Retrieves all tasks
+        /// Retorna todos os produto
         /// </summary>
         [HttpGet]
         [ProducesResponseType((int)HttpStatusCode.OK)]
@@ -33,15 +31,15 @@ namespace Nexus.Controllers
         }
 
         /// <summary>
-        /// Retrieves a specific task by ID
+        /// Retorna um produto específico pelo ID
         /// </summary>
         /// <param name="id">The ID of the task</param>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ProdutosModel), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public ActionResult<ProdutosModel> GetById(string id)
+        public ActionResult<Task> GetById(string id)
         {
-            var task = _produtoUseCase.GetTaskById(id);
+            var task = _produtoUseCase.GetProdutosById(id);
 
             if (task == null)
             {
@@ -52,7 +50,7 @@ namespace Nexus.Controllers
         }
 
         /// <summary>
-        /// Create a new task
+        /// Cadastro de produto
         /// </summary>
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.Created)]
@@ -60,7 +58,8 @@ namespace Nexus.Controllers
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         public IActionResult CreateTask([FromBody] ProdutoRequest request)
         {
-            var produtos = new ProdutosModel
+
+            var produto = new ProdutosModel
             {
                 Nome = request.Nome,
                 Categoria = request.Categoria,
@@ -69,13 +68,13 @@ namespace Nexus.Controllers
                 Stock = request.Stock
             };
 
-            _produtoUseCase.AddTask(produtos);
+            _produtoUseCase.AddProdutos(produto);
 
             return Created();
         }
 
         /// <summary>
-        /// Updates an existing task
+        /// Atualiza um produto pelo ID
         /// </summary>
         /// <param name="id">The ID of the task</param>
         [HttpPut("{id}")]
@@ -83,27 +82,26 @@ namespace Nexus.Controllers
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public IActionResult Update(string id, [FromBody] ProdutoRequest request)
         {
-            var produtoToUpdate = _produtoUseCase.GetTaskById(id);
+            var taskToUpdate = _produtoUseCase.GetProdutosById(id);
 
-            if (produtoToUpdate == null)
+            if (taskToUpdate == null)
             {
                 return NotFound();
             }
 
-            produtoToUpdate.Nome = request.Nome;
-            produtoToUpdate.Categoria = request.Categoria;
-            produtoToUpdate.Descricao = request.Descricao;
-            produtoToUpdate.Stock = request.Stock;
-            produtoToUpdate.Preco = request.Preco;
+            taskToUpdate.Nome = request.Nome;
+            taskToUpdate.Categoria = request.Categoria;
+            taskToUpdate.Descricao = request.Descricao;
+            taskToUpdate.Preco = request.Preco;
+            taskToUpdate.Stock = request.Stock;
 
-
-            _produtoUseCase.UpdateTask(produtoToUpdate);
+            _produtoUseCase.UpdateProdutos(taskToUpdate);
 
             return NoContent();
         }
 
         /// <summary>
-        /// Deletes a task by id
+        /// Exclui um produto pelo ID
         /// </summary>
         /// <param name="id">The ID of the task</param>
         [HttpDelete("{id}")]
@@ -111,14 +109,14 @@ namespace Nexus.Controllers
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public IActionResult Delete(string id)
         {
-            var taskToDelete = _produtoUseCase.GetTaskById(id);
+            var taskToDelete = _produtoUseCase.GetProdutosById(id);
 
             if (taskToDelete == null)
             {
                 return NotFound();
             }
 
-            _produtoUseCase.DeleteTask(id);
+            _produtoUseCase.DeleteProdutos(id);
 
             return NoContent();
         }

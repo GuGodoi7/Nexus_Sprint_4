@@ -3,6 +3,10 @@ using _Nexus.Repository.Interface;
 using _Nexus.Services.MLRecommendationService;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace Nexus.Controllers
 {
@@ -22,37 +26,59 @@ namespace Nexus.Controllers
             _userLikeRepository = userLikeRepository;
         }
 
+        /// <summary>
+        /// Recomenda um produto 
+        /// </summary>
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetRecommendations(string userId)
         {
-            _recommendationEngine.PreparingandTrainModel(_userLikeRepository.GetAll());
-
-
             if (!ObjectId.TryParse(userId, out ObjectId parsedUserId))
             {
                 return BadRequest("Invalid user ID");
             }
 
-            var products = _productRepository.GetAll();
+            var userLikes = _userLikeRepository.GetAll(); 
+            var likedProducts = userLikes.Where(l => l.UserId == userId).ToList(); 
+
+            if (!likedProducts.Any())
+            {
+                return NotFound("No liked products found for the user.");
+            }
+
+
+            _recommendationEngine.PreparingandTrainModel(userLikes);
+
             var recommendedProducts = new List<ProdutosModel>();
 
-            foreach (var product in products)
+            foreach (var likedProduct in likedProducts)
             {
-                if (!ObjectId.TryParse(product.Id.ToString(), out ObjectId parsedProductId))
-                {
-                    continue;
-                }
 
-                float score = _recommendationEngine.Predict(parsedUserId, parsedProductId);
-
-                if (score > 0.5)
+                if (ObjectId.TryParse(likedProduct.ProductId, out ObjectId productId))
                 {
-                    recommendedProducts.Add(product);
+
+                    var product = _productRepository.GetAll().FirstOrDefault(p => p.Id == productId);
+
+                    if (product != null)
+                    {
+
+                        var similarProducts = _productRepository.GetAll()
+                            .Where(p => p.Categoria == product.Categoria) 
+                            .ToList();
+
+                        foreach (var similarProduct in similarProducts)
+                        {
+                            if (!likedProducts.Any(lp => lp.ProductId == similarProduct.Id.ToString()))
+                            {
+                                recommendedProducts.Add(similarProduct);
+                            }
+                        }
+                    }
                 }
             }
 
-            return Ok(recommendedProducts);
+            return Ok(recommendedProducts.Distinct().ToList()); 
         }
+
+
     }
 }
-

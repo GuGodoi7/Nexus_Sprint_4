@@ -9,9 +9,14 @@ namespace _Nexus.Models
     [Collection("NX_USUARIO")]
     public class UsuarioModel
     {
+        public UsuarioModel(string email, string passwordHash)
+        {
+            Email = email;
+            SetPassword(passwordHash);
+        }
+
         [BsonId(IdGenerator = typeof(ObjectIdGenerator))]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; }
+        public ObjectId Id { get; set; }
 
         [BsonElement("NomeUsuario")]
         [Required]
