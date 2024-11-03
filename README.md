@@ -66,11 +66,10 @@ Passos:
    cd Nexus
 2. Configure a string de conexão no appsettings.json:
     ```json
-      {
-        "ConnectionStrings": {
-              "NXContext": "Data Source=oracle.fiap.com.br:1521/orcl;User ID=xxxxx;Password=xxxxx;"
-        }
-      }
+    {
+       "MongoDbConnectionString": "",
+       "MongoDbDatabase": ""
+    }     
 3. Crie as tabelas no seu banco de dados (Execute esse comando no Console do Gerenciador de Pacotes. Além disso, selecione '_Nexus.Database' como Projeto padrão):
      ```bash
    Update-Database
