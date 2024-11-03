@@ -10,9 +10,29 @@
 - Gustavo G. da Silva - RM 99585
 - Erick K. da Silva - RM 550371
 
-## clean code
+## 1. Clean Code
+- **Nomes Significativos**: Todos os métodos e variáveis foram nomeados de forma descritiva, como `Add`, `Update`, `Delete`, e `GetById`, refletindo claramente suas responsabilidades. Isso facilita a compreensão do código por outros desenvolvedores.
+  
+- **Funções Pequenas**: O código foi estruturado de modo que cada função tenha uma única responsabilidade, tornando-o mais legível e testável. Por exemplo, métodos no repositório tratam apenas de operações de CRUD.
+
+- **Evitar Código Duplicado**: Práticas de DRY (Don't Repeat Yourself) foram aplicadas, utilizando métodos auxiliares para evitar duplicação de lógica e facilitar a manutenção.
+
+- **Comentários Úteis**: Comentários foram adicionados apenas onde necessário, explicando a lógica complexa, mas evitando comentários desnecessários que apenas repetem o que o código já expressa.
+
+### 2. Princípios SOLID
+- **Single Responsibility Principle (SRP)**: Cada classe foi projetada para ter uma única responsabilidade. Por exemplo, a classe `ProdutosModel` se concentra apenas em representar os dados de um produto, enquanto o `Repository` gerencia a persistência de dados.
+
+- **Open/Closed Principle (OCP)**: O design do sistema permite que novas funcionalidades sejam adicionadas sem modificar o código existente. Isso foi alcançado através do uso de interfaces e abstrações, permitindo a extensão do sistema de maneira flexível.
+
+- **Liskov Substitution Principle (LSP)**: As subclasses podem ser utilizadas em lugar de suas superclasses sem afetar a funcionalidade do programa. Isso foi garantido através da implementação de heranças corretas e do uso de interfaces.
+
+- **Interface Segregation Principle (ISP)**: As interfaces foram divididas em componentes menores e específicos, evitando que os clientes dependessem de métodos que não utilizavam. Isso promove uma arquitetura mais limpa e compreensível.
+
+- **Dependency Inversion Principle (DIP)**: A injeção de dependência foi utilizada para desacoplar classes, permitindo que dependências fossem passadas como parâmetros em vez de serem criadas diretamente dentro das classes. Isso melhora a testabilidade e a flexibilidade do código.
 
 ## Testes
+
+## Recomendação
 
 ## 📋 Endpoints
 
