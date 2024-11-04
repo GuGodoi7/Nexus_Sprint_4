@@ -1,5 +1,6 @@
 ﻿using _Nexus.Models;
 using _Nexus.Repository.Interface;
+using _Nexus.Services.CepService;
 using MongoDB.Bson;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,8 +11,9 @@ namespace Nexus.UseCase
     {
         private readonly IRepository<UsuarioModel> _userRepository;
         private readonly IRepository<UsuarioLike> _userLikeRepository;
+        private readonly ICEP _cepService;
 
-        public UsuarioUseCase(IRepository<UsuarioModel> userRepository, IRepository<UsuarioLike> userLikeRepository)
+        public UsuarioUseCase(IRepository<UsuarioModel> userRepository, ICEP cepService, IRepository<UsuarioLike> userLikeRepository)
         {
             _userRepository = userRepository;
             _userLikeRepository = userLikeRepository;
@@ -24,7 +26,8 @@ namespace Nexus.UseCase
                 NomeUsuario = userRequest.NomeUsuario,
                 CPF = userRequest.CPF,
                 Email = userRequest.Email,
-                Telefone = userRequest.Telefone
+                Telefone = userRequest.Telefone,
+                CEP = userRequest.CEP,
             };
             user.SetPassword(userRequest.Password);
             
@@ -56,6 +59,7 @@ namespace Nexus.UseCase
                 user.Email = userRequest.Email;
                 user.Telefone = userRequest.Telefone;
                 user.SetPassword(userRequest.Password); 
+                user.CEP = userRequest.CEP;
 
                 _userRepository.Update(user);
             }

@@ -25,7 +25,7 @@ namespace Nexus.Controllers
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         public ActionResult<IEnumerable<ProdutosModel>> GetAll()
         {
-            var tasks = _produtoUseCase.GetAllTasks();
+            var tasks = _produtoUseCase.GetAllProdutos();
 
             return Ok(tasks);
         }

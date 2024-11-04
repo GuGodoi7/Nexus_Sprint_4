@@ -21,4 +21,8 @@ public class UsuarioRequest
     [Required(ErrorMessage = "O campo 'Password' é obrigatório")]
     [StringLength(15, MinimumLength = 5, ErrorMessage = "O campo 'Password' deve ter entre 5 e 15 caracteres")]
     public string Password { get; set; }
+
+    [Required(ErrorMessage = "O campo 'CEP' é obrigatório")]
+    [StringLength(9, MinimumLength = 8, ErrorMessage = "O campo 'CEP' deve ter entre 8 e 9 caracteres")]
+    public string CEP { get; set; }
 }

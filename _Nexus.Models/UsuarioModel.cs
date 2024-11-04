@@ -38,6 +38,10 @@ namespace _Nexus.Models
         [Required]
         public string Telefone { get; set; }
 
+        [BsonElement("CEP")]
+        [Required]
+        public string CEP { get; set; } 
+
         public void SetPassword(string password)
         {
             PasswordHash = BCrypt.Net.BCrypt.EnhancedHashPassword(password, 13);

@@ -14,7 +14,7 @@ namespace Nexus.UseCase
             _ProdutoRepository = ProdutoRepository;
         }
 
-        public IEnumerable<ProdutosModel> GetAllTasks()
+        public IEnumerable<ProdutosModel> GetAllProdutos()
         {
             return _ProdutoRepository.GetAll();
         }

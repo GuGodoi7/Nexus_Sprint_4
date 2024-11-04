@@ -7,6 +7,7 @@ using Microsoft.OpenApi.Models;
 using Nexus.Configuration;
 using Nexus.UseCase;
 using System.Reflection;
+using _Nexus.Services.CepService;
 
 namespace Nexus.Extensions
 {
@@ -57,6 +58,11 @@ namespace Nexus.Extensions
             return services;
         }
 
+        public static IServiceCollection AddServices(this IServiceCollection services)
+        {
+            services.AddScoped<ICEP, CEP>();
+            return services;
+        }
 
         public static IServiceCollection AddUseCases(this IServiceCollection services)
         {

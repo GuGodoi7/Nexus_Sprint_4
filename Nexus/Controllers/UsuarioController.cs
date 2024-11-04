@@ -95,7 +95,7 @@ namespace Nexus.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message); // Retorna erro 500 em caso de exceção
+                return StatusCode(500, ex.Message); 
             }
         }
 
@@ -144,11 +144,11 @@ namespace Nexus.Controllers
             try
             {
                 _userUseCase.DeleteUser(id);
-                return NoContent(); // Retorna 204 No Content se a exclusão foi bem-sucedida
+                return NoContent();
             }
             catch (Exception ex)
             {
-                return NotFound(ex.Message); // Retorna 404 se o usuário não for encontrado
+                return NotFound(ex.Message); 
             }
         }
 

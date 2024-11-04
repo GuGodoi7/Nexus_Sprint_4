@@ -1,7 +1,6 @@
 using _Nexus.Services.MLRecommendationService;
 using _Nexus.Services.SecurityService;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Authentication;
 using Nexus.Configuration;
 using Nexus.Extensions;
 
@@ -25,6 +24,7 @@ builder.Services.AddHealthChecks();
 builder.Services.AddMongoDbContext(appConfiguration);
 builder.Services.AddScoped<RecommendationEngine>();
 builder.Services.AddControllers();
+builder.Services.AddServices();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddUseCases();
 builder.Services.AddRepositories();
