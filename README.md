@@ -10,7 +10,10 @@
 - Erick K. da Silva - RM 550371
 
 ---
+## ⚠️ ATENÇÂO
+- Para realizar as requisições, adicione "Bearer YeObXpVpKCJw1I4En8ArK1621qBG0IWkQvCK86728139b86651" no cabeçalho dos endpoints.
 
+---
 ## 🏛 Arquitetura
 
 Optamos por uma arquitetura monolítica devido ao escopo definido do projeto e à integração entre as funcionalidades, que facilita a comunicação entre os módulos. A escolha pelo monólito simplifica o desenvolvimento e os testes, sendo ideal para a aplicação atual, sem previsão de expansão ou mudanças complexas. Esse modelo também reduz os custos de infraestrutura.
