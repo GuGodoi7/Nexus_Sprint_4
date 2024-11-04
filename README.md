@@ -113,6 +113,7 @@ Passos:
 1. Clone o repositório:
    ```bash
    git clone https://github.com/GuGodoi7/Nexus_Sprint_4.git
+   cd Nexus_Sprint_4
    cd Nexus
 2. Configure a string de conexão com o mongoDB no appsettings.json:
     ```json
