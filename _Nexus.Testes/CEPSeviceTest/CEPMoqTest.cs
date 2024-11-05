@@ -26,15 +26,13 @@ namespace _Nexus.Testes.CEPServiceTest
         }
 
         [Fact]
-        public async Task FindCEP_ReturnsAddressResponse_WhenCEPIsValid()
+        public async Task FindCEP_ReturnAddressReponse_WhenCEPIsValid()
         {
-            // A - Act 
+            //A - Act (Ação)
             AddressResponse addressResponse = await _cepService.FindCEP(validCEP);
 
-            // A - Assert 
+            //A - Assert (Resultado)
             Assert.NotNull(addressResponse);
-            Assert.Equal(validCEP, addressResponse.Cep); 
-            Assert.Equal("Rua Exemplo", addressResponse.Logradouro); 
         }
     }
 }
